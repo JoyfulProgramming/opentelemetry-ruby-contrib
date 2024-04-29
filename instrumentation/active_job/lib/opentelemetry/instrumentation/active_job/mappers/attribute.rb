@@ -25,9 +25,10 @@ module OpenTelemetry
               'messaging.destination' => job.queue_name,
               'messaging.message.id' => job.job_id,
               'messaging.active_job.adapter.name' => job.class.queue_adapter_name,
-              'com.joyful_programming.messaging.message.retry_count' => job.executions,
-              'com.joyful_programming.messaging.message.latency' => (job.respond_to?(:enqueued_at) && job.enqueued_at ? (Time.now - job.enqueued_at) : 0)
+              'com.joyful_programming.messaging.message.retry_count' => job.executions
             }
+
+            otel_attributes['com.joyful_programming.messaging.message.latency'] = latency_of(job) if enqueued?(job)
 
             # Not all adapters generate or provide back end specific ids for messages
             otel_attributes['messaging.active_job.message.provider_job_id'] = job.provider_job_id.to_s if job.provider_job_id
@@ -37,6 +38,16 @@ module OpenTelemetry
             otel_attributes.compact!
 
             otel_attributes
+          end
+
+          private
+
+          def enqueued?(job)
+            job.respond_to?(:enqueued_at) && job.enqueued_at
+          end
+
+          def latency_of(job)
+            1000 * (Time.zone.now.utc.to_f - Time.zone.parse(job.enqueued_at).utc.to_f)
           end
         end
       end
