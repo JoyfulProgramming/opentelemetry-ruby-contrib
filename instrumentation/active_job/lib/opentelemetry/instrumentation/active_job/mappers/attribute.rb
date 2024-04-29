@@ -24,7 +24,9 @@ module OpenTelemetry
               'messaging.system' => 'active_job',
               'messaging.destination' => job.queue_name,
               'messaging.message.id' => job.job_id,
-              'messaging.active_job.adapter.name' => job.class.queue_adapter_name
+              'messaging.active_job.adapter.name' => job.class.queue_adapter_name,
+              'com.joyful_programming.messaging.message.retry_count' => job.executions,
+              'com.joyful_programming.messaging.message.latency' => (job.enqueued_at ? Time.now - job.enqueued_at : 0)
             }
 
             # Not all adapters generate or provide back end specific ids for messages

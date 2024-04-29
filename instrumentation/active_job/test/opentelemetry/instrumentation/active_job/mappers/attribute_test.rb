@@ -47,6 +47,8 @@ describe OpenTelemetry::Instrumentation::ActiveJob::Mappers::Attribute do
       _(span.attributes['messaging.destination']).must_equal('default')
       _(span.attributes['messaging.message.id']).must_equal(job.job_id)
       _(span.attributes['messaging.active_job.message.priority']).must_be_nil
+      _(span.attributes['com.joyful_programming.messaging.message.retry_count']).must_equal(0)
+      assert_in_delta 0, span.attributes['com.joyful_programming.messaging.message.latency'], 0.1
     end
 
     _(process_span.attributes['messaging.active_job.message.provider_job_id']).must_equal(job.provider_job_id)
