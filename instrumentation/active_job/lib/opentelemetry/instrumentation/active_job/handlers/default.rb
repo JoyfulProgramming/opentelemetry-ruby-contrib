@@ -56,6 +56,7 @@ module OpenTelemetry
             otel = payload.delete(:__otel)
             span = otel&.fetch(:span)
             tokens = otel&.fetch(:ctx_tokens)
+            span&.add_attributes(@mapper.finish(payload))
 
             on_exception((payload[:error] || payload[:exception_object]), span)
           rescue StandardError => e

@@ -24,8 +24,7 @@ module OpenTelemetry
               'messaging.system' => 'active_job',
               'messaging.destination' => job.queue_name,
               'messaging.message.id' => job.job_id,
-              'messaging.active_job.adapter.name' => job.class.queue_adapter_name,
-              'com.joyful_programming.messaging.message.retry_count' => job.executions
+              'messaging.active_job.adapter.name' => job.class.queue_adapter_name
             }
 
             otel_attributes['com.joyful_programming.messaging.message.latency'] = latency_of(job) if enqueued?(job)
@@ -34,6 +33,22 @@ module OpenTelemetry
             otel_attributes['messaging.active_job.message.provider_job_id'] = job.provider_job_id.to_s if job.provider_job_id
             # This can be problematic if programs use invalid attribute types like Symbols for priority instead of using Integers.
             otel_attributes['messaging.active_job.message.priority'] = job.priority.to_s if job.priority
+
+            otel_attributes.compact!
+
+            otel_attributes
+          end
+
+          def start(payload)
+            call(payload)
+          end
+
+          def finish(payload)
+            job = payload.fetch(:job)
+
+            otel_attributes = {
+              'com.joyful_programming.messaging.message.execution_count' => job.executions
+            }
 
             otel_attributes.compact!
 
