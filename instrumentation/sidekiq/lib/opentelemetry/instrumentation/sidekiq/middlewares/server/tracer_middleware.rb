@@ -15,7 +15,15 @@ module OpenTelemetry
             include ::Sidekiq::ServerMiddleware if defined?(::Sidekiq::ServerMiddleware)
 
             def call(_worker, msg, _queue)
-              max_retries = ::Sidekiq.default_configuration[:max_retries] || ::Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
+              global_max_retries = ::Sidekiq.default_configuration[:max_retries] || ::Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
+              max_retries = if msg['retry'] == true
+                              global_max_retries
+                            elsif msg['retry'] == false
+                              0
+                            else
+                              msg['retry'] || 0
+                            end
+
               attributes = {
                 SemanticConventions::Trace::MESSAGING_SYSTEM => 'sidekiq',
                 'messaging.sidekiq.job_class' => msg['wrapped']&.to_s || msg['class'],
@@ -24,7 +32,7 @@ module OpenTelemetry
                 SemanticConventions::Trace::MESSAGING_DESTINATION_KIND => 'queue',
                 SemanticConventions::Trace::MESSAGING_OPERATION => 'process',
                 'com.joyful_programming.messaging.message.retries.current' => msg.key?('retry_count') ? (msg['retry_count'] + 1) : 0,
-                'com.joyful_programming.messaging.message.retries.maximum' => msg['retry'] == true ? max_retries : 0
+                'com.joyful_programming.messaging.message.retries.maximum' => max_retries
               }
               attributes[SemanticConventions::Trace::PEER_SERVICE] = instrumentation_config[:peer_service] if instrumentation_config[:peer_service]
 
