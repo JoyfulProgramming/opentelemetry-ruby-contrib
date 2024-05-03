@@ -14,7 +14,7 @@ module OpenTelemetry
           class TracerMiddleware
             include ::Sidekiq::ServerMiddleware if defined?(::Sidekiq::ServerMiddleware)
 
-            def call(_worker, msg, _queue)
+            def call(worker, msg, _queue)
               global_max_retries = ::Sidekiq.default_configuration[:max_retries] || ::Sidekiq::JobRetry::DEFAULT_MAX_RETRY_ATTEMPTS
               max_retries = if msg['retry'] == true
                               global_max_retries
@@ -34,8 +34,13 @@ module OpenTelemetry
                 'com.joyful_programming.messaging.message.retries.current' => current_retry,
                 'com.joyful_programming.messaging.message.retries.maximum' => max_retries,
                 'com.joyful_programming.messaging.message.retries.exhausted' => current_retry >= max_retries,
-                'com.joyful_programming.messaging.latency' => 1000.0 * (Time.now.utc.to_f - msg['enqueued_at'].to_f)
-              }
+                'com.joyful_programming.messaging.latency' => 1000.0 * (Time.now.utc.to_f - msg['enqueued_at'].to_f),
+                'com.joyful_programming.messaging.message.created_at' => msg['created_at'],
+                'com.joyful_programming.messaging.message.enqueued_at' => msg['enqueued_at'],
+                'com.joyful_programming.messaging.message.failed_at' => msg['failed_at'],
+                'com.joyful_programming.messaging.message.retried_at' => msg['retried_at'],
+                'com.joyful_programming.messaging.message.retries.dead_queue_enabled' => worker.sidekiq_options_hash['dead'] || true
+              }.compact
               attributes[SemanticConventions::Trace::PEER_SERVICE] = instrumentation_config[:peer_service] if instrumentation_config[:peer_service]
 
               span_name = case instrumentation_config[:span_naming]
