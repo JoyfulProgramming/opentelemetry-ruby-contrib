@@ -32,7 +32,8 @@ module OpenTelemetry
                 SemanticConventions::Trace::MESSAGING_DESTINATION_KIND => 'queue',
                 SemanticConventions::Trace::MESSAGING_OPERATION => 'process',
                 'com.joyful_programming.messaging.message.retries.current' => msg.key?('retry_count') ? (msg['retry_count'] + 1) : 0,
-                'com.joyful_programming.messaging.message.retries.maximum' => max_retries
+                'com.joyful_programming.messaging.message.retries.maximum' => max_retries,
+                'com.joyful_programming.messaging.latency' => 1000.0 * (Time.now.utc.to_f - msg['enqueued_at'].to_f)
               }
               attributes[SemanticConventions::Trace::PEER_SERVICE] = instrumentation_config[:peer_service] if instrumentation_config[:peer_service]
 
