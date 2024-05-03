@@ -46,6 +46,7 @@ describe OpenTelemetry::Instrumentation::Sidekiq::Middlewares::Server::TracerMid
       _(job_span.attributes['peer.service']).must_be_nil
       _(job_span.attributes['com.joyful_programming.messaging.message.retries.current']).must_equal(0)
       _(job_span.attributes['com.joyful_programming.messaging.message.retries.maximum']).must_equal(25)
+      _(job_span.attributes['com.joyful_programming.messaging.message.retries.exhausted']).must_equal(false)
       _(job_span.attributes['com.joyful_programming.messaging.latency']).must_be :>, 0
       _(job_span.events.size).must_equal(2)
       _(job_span.events[0].name).must_equal('created_at')

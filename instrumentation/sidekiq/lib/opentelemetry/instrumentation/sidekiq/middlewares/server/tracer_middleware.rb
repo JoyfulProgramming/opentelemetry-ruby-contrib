@@ -23,7 +23,7 @@ module OpenTelemetry
                             else
                               msg['retry'] || 0
                             end
-
+              current_retry = msg.key?('retry_count') ? (msg['retry_count'] + 1) : 0
               attributes = {
                 SemanticConventions::Trace::MESSAGING_SYSTEM => 'sidekiq',
                 'messaging.sidekiq.job_class' => msg['wrapped']&.to_s || msg['class'],
@@ -31,8 +31,9 @@ module OpenTelemetry
                 SemanticConventions::Trace::MESSAGING_DESTINATION => msg['queue'],
                 SemanticConventions::Trace::MESSAGING_DESTINATION_KIND => 'queue',
                 SemanticConventions::Trace::MESSAGING_OPERATION => 'process',
-                'com.joyful_programming.messaging.message.retries.current' => msg.key?('retry_count') ? (msg['retry_count'] + 1) : 0,
+                'com.joyful_programming.messaging.message.retries.current' => current_retry,
                 'com.joyful_programming.messaging.message.retries.maximum' => max_retries,
+                'com.joyful_programming.messaging.message.retries.exhausted' => current_retry >= max_retries,
                 'com.joyful_programming.messaging.latency' => 1000.0 * (Time.now.utc.to_f - msg['enqueued_at'].to_f)
               }
               attributes[SemanticConventions::Trace::PEER_SERVICE] = instrumentation_config[:peer_service] if instrumentation_config[:peer_service]
