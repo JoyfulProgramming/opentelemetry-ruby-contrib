@@ -23,7 +23,7 @@ module OpenTelemetry
                 SemanticConventions::Trace::MESSAGING_DESTINATION => msg['queue'],
                 SemanticConventions::Trace::MESSAGING_DESTINATION_KIND => 'queue',
                 SemanticConventions::Trace::MESSAGING_OPERATION => 'process',
-                'com.joyful_programming.messaging.message.retries.current' => msg['retry_count'] || 0,
+                'com.joyful_programming.messaging.message.retries.current' => msg.key?('retry_count') ? (msg['retry_count'] + 1) : 0,
                 'com.joyful_programming.messaging.message.retries.maximum' => msg['retry'] == true ? max_retries : 0
               }
               attributes[SemanticConventions::Trace::PEER_SERVICE] = instrumentation_config[:peer_service] if instrumentation_config[:peer_service]
