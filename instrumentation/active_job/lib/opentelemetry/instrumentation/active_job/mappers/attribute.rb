@@ -47,7 +47,7 @@ module OpenTelemetry
           end
 
           def latency_of(job)
-            1000 * (Time.zone.now.utc.to_f - Time.zone.parse(job.enqueued_at).utc.to_f)
+            1000 * (Time.now.to_f - Time.parse(job.enqueued_at.to_s).to_f)
           end
         end
       end
