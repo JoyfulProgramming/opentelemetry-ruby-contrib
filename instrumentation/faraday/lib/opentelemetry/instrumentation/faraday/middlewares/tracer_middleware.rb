@@ -49,7 +49,7 @@ module OpenTelemetry
             instrumentation_attrs = {
               'http.method' => http_method,
               'http.url' => OpenTelemetry::Common::Utilities.cleanse_url(url.to_s),
-              'faraday.adapter.name' => app.class.name
+              'faraday.adapter.name' => ::Faraday.default_adapter.to_s
             }
             instrumentation_attrs['net.peer.name'] = url.host if url.host
             instrumentation_attrs['peer.service'] = config[:peer_service] if config[:peer_service]
