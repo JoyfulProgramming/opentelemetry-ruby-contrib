@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 3.0'
 
   spec.add_dependency 'opentelemetry-api', '~> 1.0'
+  spec.add_dependency 'opentelemetry-instrumentation-action_mailer', '~> 0.1.0'
   spec.add_dependency 'opentelemetry-instrumentation-action_pack', '~> 0.9.0'
   spec.add_dependency 'opentelemetry-instrumentation-action_view', '~> 0.7.0'
   spec.add_dependency 'opentelemetry-instrumentation-active_job', '~> 0.7.0'
@@ -39,7 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'opentelemetry-sdk', '~> 1.1'
   spec.add_development_dependency 'opentelemetry-test-helpers', '~> 0.3'
   spec.add_development_dependency 'rack-test', '~> 2.1.0'
-  spec.add_development_dependency 'rails', '>= 6.1'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rubocop', '~> 1.62'
   spec.add_development_dependency 'rubocop-performance', '~> 1.20'

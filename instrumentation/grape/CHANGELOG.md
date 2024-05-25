@@ -1,5 +1,13 @@
 # Release History: opentelemetry-instrumentation-grape
 
+### v0.1.8 / 2024-05-14
+
+* DOCS: Instrumentation Authors Guide
+
+### v0.1.7 / 2024-04-30
+
+* FIXED: Bundler conflict warnings
+
 ### v0.1.6 / 2023-11-23
 
 * CHANGED: Applied Rubocop Performance Recommendations [#727](https://github.com/open-telemetry/opentelemetry-ruby-contrib/pull/727)
