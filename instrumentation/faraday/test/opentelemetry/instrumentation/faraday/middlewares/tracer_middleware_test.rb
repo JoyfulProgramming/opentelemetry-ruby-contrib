@@ -49,7 +49,7 @@ describe OpenTelemetry::Instrumentation::Faraday::Middlewares::TracerMiddleware 
         _(span.name).must_equal 'HTTP GET'
         _(span.attributes['http.method']).must_equal 'GET'
         _(span.attributes['http.status_code']).must_equal 200
-        _(span.attributes['http.url']).must_equal 'http://example.com/success'
+        _(span.attributes['url.full']).must_equal 'http://example.com/success'
         _(span.attributes['net.peer.name']).must_equal 'example.com'
         _(response.env.request_headers['Traceparent']).must_equal(
           "00-#{span.hex_trace_id}-#{span.hex_span_id}-01"
@@ -62,7 +62,7 @@ describe OpenTelemetry::Instrumentation::Faraday::Middlewares::TracerMiddleware 
         _(span.name).must_equal 'HTTP GET'
         _(span.attributes['http.method']).must_equal 'GET'
         _(span.attributes['http.status_code']).must_equal 404
-        _(span.attributes['http.url']).must_equal 'http://example.com/not_found'
+        _(span.attributes['url.full']).must_equal 'http://example.com/not_found'
         _(span.attributes['net.peer.name']).must_equal 'example.com'
         _(response.env.request_headers['Traceparent']).must_equal(
           "00-#{span.hex_trace_id}-#{span.hex_span_id}-01"
@@ -75,7 +75,7 @@ describe OpenTelemetry::Instrumentation::Faraday::Middlewares::TracerMiddleware 
         _(span.name).must_equal 'HTTP GET'
         _(span.attributes['http.method']).must_equal 'GET'
         _(span.attributes['http.status_code']).must_equal 500
-        _(span.attributes['http.url']).must_equal 'http://example.com/failure'
+        _(span.attributes['url.full']).must_equal 'http://example.com/failure'
         _(span.attributes['net.peer.name']).must_equal 'example.com'
         _(response.env.request_headers['Traceparent']).must_equal(
           "00-#{span.hex_trace_id}-#{span.hex_span_id}-01"
@@ -93,7 +93,7 @@ describe OpenTelemetry::Instrumentation::Faraday::Middlewares::TracerMiddleware 
         _(span.name).must_equal 'HTTP GET'
         _(span.attributes['http.method']).must_equal 'OVERRIDE'
         _(span.attributes['http.status_code']).must_equal 200
-        _(span.attributes['http.url']).must_equal 'http://example.com/success'
+        _(span.attributes['url.full']).must_equal 'http://example.com/success'
         _(span.attributes['net.peer.name']).must_equal 'example.com'
         _(span.attributes['test.attribute']).must_equal 'test.value'
         _(response.env.request_headers['Traceparent']).must_equal(
@@ -152,7 +152,7 @@ describe OpenTelemetry::Instrumentation::Faraday::Middlewares::TracerMiddleware 
       it 'does not leak authentication credentials' do
         client.run_request(:get, 'http://username:password@example.com/success', nil, {})
 
-        _(span.attributes['http.url']).must_equal 'http://example.com/success'
+        _(span.attributes['url.full']).must_equal 'http://example.com/success'
       end
     end
 
@@ -171,7 +171,7 @@ describe OpenTelemetry::Instrumentation::Faraday::Middlewares::TracerMiddleware 
         _(span.name).must_equal 'HTTP GET'
         _(span.attributes['http.method']).must_equal 'GET'
         _(span.attributes['http.status_code']).must_equal 200
-        _(span.attributes['http.url']).must_equal 'http:/success'
+        _(span.attributes['url.full']).must_equal 'http:/success'
         _(span.attributes).wont_include('net.peer.name')
         _(response.env.request_headers['Traceparent']).must_equal(
           "00-#{span.hex_trace_id}-#{span.hex_span_id}-01"

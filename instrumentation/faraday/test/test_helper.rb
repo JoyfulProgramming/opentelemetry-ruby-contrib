@@ -10,6 +10,7 @@ Bundler.require(:default, :development, :test)
 require 'minitest/autorun'
 require 'webmock/minitest'
 
+require 'faraday'
 require 'opentelemetry-instrumentation-faraday'
 
 # global opentelemetry-sdk setup:
