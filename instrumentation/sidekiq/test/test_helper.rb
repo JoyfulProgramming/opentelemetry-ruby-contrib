@@ -11,6 +11,7 @@ require 'active_job'
 
 require 'minitest/autorun'
 require 'rspec/mocks/minitest_integration'
+require 'sidekiq'
 require 'sidekiq/testing'
 
 if Gem::Version.new(Sidekiq::VERSION) >= Gem::Version.new('7.0.0')

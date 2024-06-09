@@ -38,8 +38,7 @@ module OpenTelemetry
                 'com.joyful_programming.messaging.message.created_at' => msg['created_at'],
                 'com.joyful_programming.messaging.message.enqueued_at' => msg['enqueued_at'],
                 'com.joyful_programming.messaging.message.failed_at' => msg['failed_at'],
-                'com.joyful_programming.messaging.message.retried_at' => msg['retried_at'],
-                'com.joyful_programming.messaging.message.retries.dead_queue_enabled' => worker.sidekiq_options_hash['dead'] || true
+                'com.joyful_programming.messaging.message.retried_at' => msg['retried_at']
               }.compact
               attributes[SemanticConventions::Trace::PEER_SERVICE] = instrumentation_config[:peer_service] if instrumentation_config[:peer_service]
 
